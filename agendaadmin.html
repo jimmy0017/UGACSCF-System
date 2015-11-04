@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	
+	<title>UGACSCF Agenda Admin</title>
+	<meta name="description" content="Sign Up Sheet">
+	<meta name="viewport" content="width=device-width">
+<!--	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/styles.css">-->
+	
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/parse-latest.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+	<body>
+		<h3>Total Agenda: <span class="label label-default" id="totalNumber">Null</span></h3>
+
+    		
+		<table class="table table-bordered table-hover" id="signUpTable">
+		  <tr>
+		    <td>Number</td>
+		    <td>Agenda Detail</td>
+		  </tr>
+		</table>
+		<script>
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+ 			var MeetingAgenda = Parse.Object.extend("MeetingAgenda");
+    			var query = new Parse.Query(MeetingAgenda);
+			//query.equalTo("playerName", "Dan Stemkoski");
+			
+			function CreateRow(number,detail){
+			    var table = document.getElementById("signUpTable");
+			    var row = table.insertRow(1);
+			    var cell = row.insertCell(0);
+			    cell.innerHTML = number;
+			    cell = row.insertCell(1);
+			    cell.innerHTML = detail;
+			}
+			
+			query.find({
+			  success: function(results) {
+			  	$(".total").show();
+			  	document.getElementById("totalNumber").innerHTML = results.length;
+			    //alert("Successfully retrieved " + results.length + " sign up people.");
+			    // Do something with the returned Parse.Object values
+			    for (var i = 0; i < results.length; i++) {
+			      var object = results[i];
+			      CreateRow(i+1,object.get('AgendaDetail'));
+			    }
+			  },
+			  error: function(error) {
+			    alert("Error: " + error.code + " " + error.message);
+			  }
+			});
+			
+		</script>
+	</body>
+	<footer>
+	  <p>Created by: Jimmy Lin for <a href="http://www.ugacscf.org">UGA CSCF</a></p>
+	  <p>Contact information: <a href="mailto:jlin@ugacscf.org">jlin@ugacscf.org</a>.</p>
+	  <p>version: alpha 0.0.1 By Oct 24, 2015</p>
+	</footer>
+</html>

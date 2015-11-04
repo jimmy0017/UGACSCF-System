@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>UGACSCF System Login Page</title>
+		<meta name="description" content="Registration Page">
+		<meta name="viewport" content="width=device-width">
+
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/HeaderFooter.js"></script>
+	</head>
+
+	<body>
+		<div id="header"></div>
+		<div id="main">
+			<h1>UGACSCF Login </h1>
+
+			<form id="LoginForm" method="post">
+				<div class="form-group">
+					<label for="username">Username:</label>
+					<input type="text" class="form-control" id="username" placeholder="myusername">
+				</div>
+				<div class="form-group">
+					<label for="password">Password:</label>
+					<input type="password" class="form-control" id="password" placeholder="******">
+				</div>
+				<button type="submit" id="signUpButton" class="btn btn-default">Login</button>
+			</form>
+
+			<div style="display:none" class="error">
+				Looks like there was a problem with login. Try again. If this occur again, please email <a href="mailto:jlin@ugacscf.org">jlin@ugacscf.org</a>
+			</div>
+
+			<div style="display:none" id="successbox" class="success">
+				<p>Congratulation! You successfully logged in.</p>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+			
+			//$(".nav").find("login").AddClass("active");
+			var currentUser = Parse.User.current();
+			if (currentUser) {
+				//document.getElementById("userbox").innerHTML = currentUser.get("username");
+				alert("You already signed in!<br>You will be redirect to home page.");
+				window.location.replace("index.html");
+			} else {
+				
+			}
+			
+			$('#LoginForm').submit(function(event) {
+				event.preventDefault();
+				SubmitParse();
+			});
+
+			function SubmitParse() {
+				var inputusername = $("#username").value;
+				var inputpassword = $("#password").value;
+				Parse.User.logIn(inputusername, inputpassword, {
+					success: function(user) {
+						alert("Success! You will be redirect to main page.");
+						window.location.replace("index.html");
+					},
+					error: function(user, error) {
+						// Show the error message somewhere and let the user try again.
+						alert("Error: " + error.code + " " + error.message);
+					}
+				});
+			};
+		</script>
+	</body>
+	<div id="footer" class="text-muted"></div>
+
+</html>

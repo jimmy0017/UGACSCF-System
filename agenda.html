@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	
+	<title>UGACSCF Agenda Input Sheet</title>
+	<meta name="description" content="Sign Up Sheet">
+	<meta name="viewport" content="width=device-width">
+<!--	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/styles.css">-->
+	
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/parse-latest.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  
+  <div id="main">
+    <h1>UGACSCF Agenda</h1>
+
+	<form id="SignUpForm" method="post" >
+		<div class="form-group">
+			<label>请输入你的想法.</label>
+			<textarea class="form-control" rows="3" id="textarea_agenda" placeholder="支持中文输入。"></textarea>
+		</div>
+		<button type="submit" id="signUpButton" class="btn btn-default">Submit</button>
+	</form>
+	
+    <div style="display:none" class="error">
+      Looks like there was a problem with save. Try again.
+    </div>
+
+    <div style="display:none" id="successbox" class="success">
+      <p>Congratulation! You successfully submitted.</p>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+ 	var MeetingAgenda = Parse.Object.extend("MeetingAgenda");
+    var NewMeetingAgenda = new MeetingAgenda();
+    
+    $('#SignUpForm').submit(function () {
+		 SubmitParse();
+		 return false;
+	});
+    
+	function SubmitParse() {
+	  	var agendadetail = document.getElementById("textarea_agenda").value;
+	    	NewMeetingAgenda.save({AgendaDetail: agendadetail}, {
+	    		success: function(object) {
+	        		//$(".success").show();
+	        		$("#successbox").slideDown("slow");
+                //setTimeout('$("#successbox").slideUp();$("#SignUpForm").slideUp("slow")', 2000);
+	      		setTimeout('$("#SignUpForm").slideUp("slow")', 2000);
+	    			},
+	      		error: function(model, error) {
+	        		$(".error").show();
+	      		}
+	    	});
+	};
+
+	
+  </script>
+</body>
+	<footer>
+	  <p>Created by: Jimmy Lin for <a href="http://www.ugacscf.org">UGA CSCF</a></p>
+	  <p>Contact information: <a href="mailto:jlin@ugacscf.org">jlin@ugacscf.org</a>.</p>
+	  <p>version: alpha 0.0.1 By Oct 24, 2015</p>
+	</footer>
+
+</html>

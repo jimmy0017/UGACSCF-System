@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>UGACSCF System Index</title>
+		<meta name="description" content="Sign Up Sheet">
+		<meta name="viewport" content="width=device-width">
+
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/HeaderFooter.js"></script>
+	</head>
+
+	<body>
+
+		<div id="main">
+			<h1>UGACSCF Sign Up Sheet</h1>
+
+			<form id="SignUpForm" method="post">
+				<div class="form-group">
+					<label for="fname">First Name</label>
+					<input type="text" class="form-control" id="fname" placeholder="Jane">
+				</div>
+				<div class="form-group">
+					<label for="lname">Last Name</label>
+					<input type="text" class="form-control" id="lname" placeholder="Doe">
+				</div>
+				<div class="form-group">
+					<label for="emailInput">Email address</label>
+					<input type="email" class="form-control" id="emailInput" placeholder="Email">
+				</div>
+				<div class="form-group">
+					<label>剩余人数： <span class="label label-default" id="totalNumber">Null</span></label>
+				</div>
+				<button type="submit" id="signUpButton" class="btn btn-default">Sign Up</button>
+			</form>
+
+			<div style="display:none" class="error">
+				<p>Looks like there was a problem with save. Try again.</p>
+			</div>
+
+			<div style="display:none" id="successbox" class="success">
+				<p>Congratulation! You successfully signed up.</p>
+				<p>如果您需要接送，请加微信群。</p>
+				<!--				<p>手机可点一键链接：<a href="http://weixin.qq.com/g/Aes3QGo89UulfN_c">点我加入微信群</a></p>-->
+				<p>扫描二维码：
+					<br><img src="img/weixin-sandy-creek.jpg"></p>
+			</div>
+
+			<div style="display:none" class="nospace">
+				Already full~
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+			var SignUpSheet = Parse.Object.extend("SignUpSheet");
+			var NewSignUpSheet = new SignUpSheet();
+			var query = new Parse.Query(SignUpSheet);
+			var fnameParam = getQueryVariable('fname');
+			if (fnameParam != null) document.getElementById("fname").value = fnameParam;
+			var lnameParam = getQueryVariable('lname');
+			if (lnameParam != null) document.getElementById("lname").value = lnameParam;
+			var emailParam = getQueryVariable('email');
+			if (emailParam != null) document.getElementById("emailInput").value = emailParam;
+
+			function checkEmail(emailaddress) {
+				query.find({
+					success: function(results) {
+						for (var i = 0; i < results.length; i++) {
+							var object = results[i];
+							if (emailaddress == object.get('email')) {
+								return false;
+							}
+						}
+					},
+					error: function(error) {
+						alert("Error: " + error.code + " " + error.message);
+					}
+				});
+			}
+
+			function getQueryVariable(variable) {
+				var query = window.location.search.substring(1);
+				var vars = query.split('&');
+				for (var i = 0; i < vars.length; i++) {
+					var pair = vars[i].split('=');
+					if (decodeURIComponent(pair[0]) == variable) {
+						return decodeURIComponent(pair[1]);
+					}
+				}
+				console.log('Query variable %s not found', variable);
+			}
+			if ((fnameParam != null) & (lnameParam != null) & (emailParam != null)) {
+				var autoreg = new SignUpSheet();
+				if (checkEmail(emailParam)) {
+					autoreg.save({
+						firstName: fnameParam,
+						lastName: lnameParam,
+						email: emailParam
+					}, {
+						success: function(object) {
+							$(".success").show();
+							alert("Success");
+						},
+						error: function(model, error) {
+							$(".error").show();
+							alert("error");
+						}
+					});
+				}else{
+					alert("请不要重复注册！！");
+				}
+			}
+			$('#SignUpForm').submit(function() {
+				SubmitParse();
+				return false;
+			});
+			query.find({
+				success: function(results) {
+					document.getElementById("totalNumber").innerHTML = 25 - results.length;
+					if ((25 - results.length) == 0) {
+						$(".nospace").show();
+						$(".SignUpForm").hide();
+					}
+				},
+				error: function(error) {
+					alert("Error: " + error.code + " " + error.message);
+				}
+			});
+
+			function SubmitParse() {
+				var fname = document.getElementById("fname").value;
+				var lname = document.getElementById("lname").value;
+				var emailInput = document.getElementById("emailInput").value;
+				if (checkEmail(emailInput)) {
+					NewSignUpSheet.save({
+						firstName: fname,
+						lastName: lname,
+						email: emailInput
+					}, {
+						success: function(object) {
+							//$(".success").show();
+							$("#successbox").slideDown("slow");
+							//setTimeout('$("#successbox").slideUp();$("#SignUpForm").slideUp("slow")', 2000);
+							setTimeout('$("#SignUpForm").slideUp("slow")', 2000);
+						},
+						error: function(model, error) {
+							$(".error").show();
+						}
+					});
+				}else{
+					alert("请不要重复注册！！");
+				}
+			};
+		</script>
+	</body>
+	<div id="footer" class="text-muted"></div>
+
+
+</html>

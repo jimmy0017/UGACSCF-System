@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>UGACSCF活动录入</title>
+		<meta name="description" content="Sign Up Sheet">
+		<meta name="viewport" content="width=device-width">
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<link rel="stylesheet" href="css/main.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/HeaderFooter.js"></script>
+	</head>
+
+	<body>
+		<div id="header" class="text-muted"></div>
+		<div id="main">
+			<h1>UGACSCF活动录入</h1>
+
+			<form id="eventInputForm" method="post">
+				<div class="form-group">
+					<label for="eventName">活动名称：</label>
+					<input type="text" class="form-control" id="eventName" placeholder="Event Name">
+				</div>
+				<div class="form-group">
+					<label for="eventDate">活动时间：</label>
+					<input type="datetime-local" class="form-control" id="eventDate">
+				</div>
+				<div class="form-group">
+					<label for="eventLocation">活动地点：</label>
+					<input type="text" class="form-control" id="eventLocation" placeholder="Event Location">
+				</div>
+				<div class="form-group">
+					<label for="eventDetail">活动细节：</label>
+					<textarea class="form-control" rows="5" id="eventDetail">Enter text here...</textarea>
+				</div>
+				<div class="form-group">
+					<label for="eventMaxPeople">人数限制：</label>
+					<input type="number" class="form-control" id="eventMaxPeople" placeholder="30">
+				</div>
+				<div class="form-group">
+					<label for="eventShowLimit">显示人数限制：</label>
+					<label>
+						<input type="radio" name="eventDisplayLimit" id="eventDisplayLimitTrue" value="true" checked>显示
+						<input type="radio" name="eventDisplayLimit" id="eventDisplayLimitFalse" value="false">不显示
+					</label>
+				</div>
+				<button type="submit" id="submitEvent" class="btn btn-default">提交</button>
+			</form>
+
+			<div style="display:none" class="error">
+				<p>Looks like there was a problem with save. Try again.</p>
+			</div>
+
+			<div style="display:none" id="successbox" class="success">
+				<p>提交成功</p>
+
+			</div>
+
+			<div style="display:none" class="nospace">
+				Already full~
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+			var eventInfo = Parse.Object.extend("eventInfo");
+			var newEventInfo = new eventInfo();
+			$('#eventInputForm').submit(function() {
+				SubmitParse();
+				return false;
+			});
+
+			function SubmitParse() {
+				var eventName = document.getElementById("eventName").value;
+				var eventDate = document.getElementById("eventDate").value;
+				var eventDetail = document.getElementById("eventDetail").value;
+				var eventLocation = document.getElementById("eventLocation").value;
+				var eventMaxPeople = document.getElementById("eventMaxPeople").value;
+				var eventDisplayLimitTrue = $('input[name="eventDisplayLimit"]:checked').val();;
+				newEventInfo.save({
+					eventName: eventName,
+					eventDate: eventDate,
+					eventDetail: eventDetail,
+					eventLocation: eventLocation,
+					eventMaxPeople: eventMaxPeople,
+					eventDisplayLimit: eventDisplayLimitTrue
+				}, {
+					success: function(object) {
+						$("#successbox").slideDown("slow");
+						setTimeout('$("#eventInputForm").slideUp("slow")', 2000);
+					},
+					error: function(model, error) {
+						$(".error").show();
+					}
+				});
+			}
+		</script>
+	</body>
+	<div id="footer" class="text-muted"></div>
+
+</html>
