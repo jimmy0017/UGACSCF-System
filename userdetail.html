@@ -50,7 +50,8 @@
 			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
 			var currentUser = Parse.User.current();
 			if (currentUser) {
-				//document.getElementById("userbox").innerHTML = currentUser.get("username");
+				document.getElementById("username").value = currentUser.get("username");
+				document.getElementById("emailInput").value = currentUser.get("email");
 			} else {
 				alert("You do not have permission to view this!<br>You will be redirect to home page.");
 				window.location.replace("index.html");

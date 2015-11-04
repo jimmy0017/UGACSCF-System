@@ -24,11 +24,11 @@
 			<form id="LoginForm" method="post">
 				<div class="form-group">
 					<label for="username">Username:</label>
-					<input type="text" class="form-control" id="username" placeholder="myusername">
+					<input type="text" class="form-control" id="usernameinput" placeholder="myusername">
 				</div>
 				<div class="form-group">
 					<label for="password">Password:</label>
-					<input type="password" class="form-control" id="password" placeholder="******">
+					<input type="password" class="form-control" id="passwordinput" placeholder="******">
 				</div>
 				<button type="submit" id="signUpButton" class="btn btn-default">Login</button>
 			</form>
@@ -61,8 +61,8 @@
 			});
 
 			function SubmitParse() {
-				var inputusername = $("#username").value;
-				var inputpassword = $("#password").value;
+				var inputusername = document.getElementById("usernameinput").value;
+				var inputpassword = document.getElementById("passwordinput").value;
 				Parse.User.logIn(inputusername, inputpassword, {
 					success: function(user) {
 						alert("Success! You will be redirect to main page.");
@@ -70,7 +70,7 @@
 					},
 					error: function(user, error) {
 						// Show the error message somewhere and let the user try again.
-						alert("Error: " + error.code + " " + error.message);
+						alert("Error: " + error.code + " " + error.message+"username:"+inputusername + "password"+inputpassword);
 					}
 				});
 			};
