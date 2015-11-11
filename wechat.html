@@ -16,14 +16,31 @@
 		<script type="text/javascript" src="js/HeaderFooter.js"></script>
 		<link rel="stylesheet" href="css/main.css" />
 		<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<script type="text/javascript">
+			(function() {
+				WgateJs = {};
+				WgateJs.auto_auth = true;
+				var u = (("https:" == document.location.protocol) ? "https" : "http") + "://st.weixingate.com/";
+				u = u + 'st/1656';
+				var d = document,
+					g = d.createElement('script'),
+					s = d.getElementsByTagName('script')[0];
+				g.type = 'text/javascript';
+				g.defer = true;
+				g.async = true;
+				g.src = u;
+				s.parentNode.insertBefore(g, s);
+			})();
+		</script>
+
 	</head>
 
 	<body>
 
 		<div id="main">
-			<h1>UGACSCF Sign Up Sheet</h1>
+			<h1>UGACSCF 微信绑定</h1>
 
-			<form id="SignUpForm" method="post">
+			<form id="BindForm" method="post">
 				<div class="form-group">
 					<label for="fname">First Name</label>
 					<input type="text" class="form-control" id="fname" placeholder="Jane">
@@ -39,81 +56,29 @@
 				<!--<div class="form-group">
 					<label>剩余人数： <span class="label label-default" id="totalNumber">Null</span></label>
 				</div>-->
-				<button type="submit" id="signUpButton" class="btn btn-default">Sign Up</button>
+				<button type="submit" id="signUpButton" class="btn btn-default">绑定</button>
 			</form>
 
 			<div style="display:none" class="error">
-				<p>Looks like there was a problem with save. Try again.</p>
+				<p>绑定未成功。请重新尝试。</p>
 			</div>
 
 			<div style="display:none" id="successbox" class="success">
-				<p>Congratulation! You successfully signed up.</p>
-			</div>
-
-			<div style="display:none" id="inputnumber" class="success">
-				<form id="InputNumberForm" method="post">
-					<div class="form-group">
-						<label for="fname">First Name</label>
-						<input type="text" class="form-control" id="fname" placeholder="Jane">
-					</div>
-					<div class="form-group">
-						<label for="lname">Last Name</label>
-						<input type="text" class="form-control" id="lname" placeholder="Doe">
-					</div>
-					<div class="form-group">
-						<label for="emailInput">Email address</label>
-						<input type="email" class="form-control" id="emailInput" placeholder="Email">
-					</div>
-					<!--<div class="form-group">
-					<label>剩余人数： <span class="label label-default" id="totalNumber">Null</span></label>
-				</div>-->
-					<button type="submit" id="signUpButton" class="btn btn-default">Sign Up</button>
-				</form>
-			</div>
-
-			<div style="display:none" id="successinput" class="success">
-				<p>Congratulation! You successfully input the number.</p>
-			</div>
-
-			<div style="display:none" class="nospace">
-				Already full~
+				<p>绑定成功！</p>
 			</div>
 		</div>
 
 		<script type="text/javascript">
 			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
-			var SignUpSheet = Parse.Object.extend("SignUpSheet");
-			var NewSignUpSheet = new SignUpSheet();
-			var query = new Parse.Query(SignUpSheet);
-			var fnameParam = getQueryVariable('fname');
-			if (fnameParam != null) document.getElementById("fname").value = fnameParam;
-			var lnameParam = getQueryVariable('lname');
-			if (lnameParam != null) document.getElementById("lname").value = lnameParam;
-			var emailParam = getQueryVariable('email');
-			if (emailParam != null) document.getElementById("emailInput").value = emailParam;
-			if ((fnameParam != null) & (lnameParam != null) & (emailParam != null)) {
-				SubmitParse();
-				document.getElementById("fname").disabled = true;
-				document.getElementById("lname").disabled = true;
-				document.getElementById("emailInput").disabled = true;
-				document.getElementById("signUpButton").disabled = true;
+			var WgateidSheet = Parse.Object.extend("wgateid");
+			var NewWgateid = new WgateidSheet();
+			var wgateidParam = getQueryVariable('wgateid');
+			if (wgateidParam != null) {
+				//alert("wgateid=" + wgateidParam);
+			} else {
+				alert("go back");
 			}
-
-			function checkEmail(emailaddress) {
-				query.find({
-					success: function(results) {
-						for (var i = 0; i < results.length; i++) {
-							var object = results[i];
-							if (emailaddress == object.get('email')) {
-								return false;
-							}
-						}
-					},
-					error: function(error) {
-						alert("Error: " + error.code + " " + error.message);
-					}
-				});
-			}
+			var verifyParam = getQueryVariable('verify');
 
 			function getQueryVariable(variable) {
 				var query = window.location.search.substring(1);
@@ -126,33 +91,42 @@
 				}
 				console.log('Query variable %s not found', variable);
 			}
-			$('#SignUpForm').submit(function() {
+			$('#BindForm').submit(function() {
 				SubmitParse();
 				return false;
 			});
-			/*query.find({
+			var query = new Parse.Query(WgateidSheet);
+			query.equalTo("wgateId", wgateidParam);
+			query.find({
 				success: function(results) {
-					document.getElementById("totalNumber").innerHTML = 25 - results.length;
-					if ((25 - results.length) == 0) {
-						$(".nospace").show();
-						$(".SignUpForm").hide();
-					}
+					var object = results[0];
+					document.getElementById("fname").value = object.get("firstName");
+					document.getElementById("lname").value = object.get("lastName");
+					document.getElementById("emailInput").value = object.get("email");
+					document.getElementById("fname").disabled = true;
+					document.getElementById("lname").disabled = true;
+					document.getElementById("emailInput").disabled = true;
+					document.getElementById("signUpButton").disabled = true;
+					alert("你已经成功绑定了。");
+					window.location.href = "https://system.ugacscf.org/?fname=" + object.get("firstName") + "&lname=" + object.get("lastName") + "&email=" + object.get("email");
 				},
 				error: function(error) {
 					alert("Error: " + error.code + " " + error.message);
 				}
-			});*/
+			});
+
 			function SubmitParse() {
 				var fname = document.getElementById("fname").value;
 				var lname = document.getElementById("lname").value;
 				var emailInput = document.getElementById("emailInput").value;
-				NewSignUpSheet.save({
+				NewWgateid.save({
 					firstName: fname,
 					lastName: lname,
-					email: emailInput
+					email: emailInput,
+					wgateId: wgateidParam
 				}, {
 					success: function(object) {
-						//$(".success").show();
+						// $(".success").show();
 						$("#successbox").slideDown("slow");
 						//setTimeout('$("#SignUpForm").slideUp("slow")', 2000);
 					},

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>UGACSCF Sign Up Sheet</title>
+		<meta name="description" content="Sign Up Sheet">
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css">
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	</head>
+
+	<body>
+		<h3>Total Sign Up Number: <span class="label label-default" id="totalNumber">Null</span></h3>
+
+		<table class="display" id="signUpTable" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Position</th>
+					<th>Office</th>
+					<th>Age</th>
+					<th>Start date</th>
+					<th>Salary</th>
+				</tr>
+			</thead>
+
+			<tfoot>
+				<tr>
+					<th>Name</th>
+					<th>Position</th>
+					<th>Office</th>
+					<th>Age</th>
+					<th>Start date</th>
+					<th>Salary</th>
+				</tr>
+			</tfoot>
+			<tbody id="tbodyId">
+				<tr>
+					<td>Tiger Nixon</td>
+					<td>System Architect</td>
+					<td>Edinburgh</td>
+					<td>61</td>
+					<td>2011/04/25</td>
+					<td>$320,800</td>
+				</tr>
+				<tr>
+					<td>Garrett Winters</td>
+					<td>Accountant</td>
+					<td>Tokyo</td>
+					<td>63</td>
+					<td>2011/07/25</td>
+					<td>$170,750</td>
+				</tr>
+				<tr>
+					<td>Ashton Cox</td>
+					<td>Junior Technical Author</td>
+					<td>San Francisco</td>
+					<td>66</td>
+					<td>2009/01/12</td>
+					<td>$86,000</td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="footer1"></div>
+		<script>
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+			var SignUpSheet = Parse.Object.extend("SignUpSheet");
+			var query = new Parse.Query(SignUpSheet);
+
+			function CreateRow(numberGuide, fname, lname, email, regtime) {
+				var table = document.getElementById("tbodyId");
+				document.getElementById("signUpTable").append("<tr>" +
+					"<td>" + numberGuide.toString() + "</td>" +
+					"<td>" + fname.toString() + "</td>" +
+					"<td>" + lanme.toString() + "</td>" +
+					"<td>" + email.toString() + "</td>" +
+					"<td>" + regtime.toString() + "</td>" +
+					"</td></tr>");​​​​​​​​​​​
+			}
+			query.find({
+				success: function(results) {
+					$(".total").show();
+					document.getElementById("totalNumber").innerHTML = results.length;
+					//alert("Successfully retrieved " + results.length + " sign up people.");
+					// Do something with the returned Parse.Object values
+					for (var i = 0; i < results.length; i++) {
+						var object = results[i];
+						CreateRow(i + 1, object.get('firstName'), object.get('lastName'), object.get('email'), object.get('createdAt'));
+					}
+				},
+				error: function(error) {
+					alert("Error: " + error.code + " " + error.message);
+				}
+			});
+			$(document).ready(function() {
+				var table = $('#signUpTable').DataTable();
+				$('#signUpTable').on('click', 'tr', function() {
+					$(this).toggleClass('selected');
+				});
+				$('#button').click(function() {
+					alert(table.rows('.selected').data().length + ' row(s) selected');
+				});
+			});
+		</script>
+	</body>
+
+</html>

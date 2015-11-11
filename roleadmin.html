@@ -4,8 +4,8 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>UGACSCF System User Detail</title>
-		<meta name="description" content="User Detail Page">
+		<title>UGACSCF System Registration Page</title>
+		<meta name="description" content="Registration Page">
 		<meta name="viewport" content="width=device-width">
 
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
@@ -19,12 +19,12 @@
 	<body>
 		<div id="header"></div>
 		<div id="main">
-			<h1>User Detail</h1>
+			<h1>UGACSCF Registration </h1>
 
-			<form id="SignUpForm" method="post">
+			<form id="submitRole" method="post">
 				<div class="form-group">
-					<label for="username">Username:</label>
-					<input type="text" class="form-control" id="username" placeholder="myusername">
+					<label for="roleName">Role Name:</label>
+					<input type="text" class="form-control" id="roleName" placeholder="Role Name">
 				</div>
 				<div class="form-group">
 					<label for="password">Password:</label>
@@ -48,38 +48,43 @@
 
 		<script type="text/javascript">
 			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
-			var currentUser = Parse.User.current();
-			if (currentUser) {
-				document.getElementById("username").value = currentUser.get("username");
-				document.getElementById("emailInput").value = currentUser.get("email");
-			} else {
-				alert("You do not have permission to view this!<br>You will be redirect to home page.");
-				window.location.replace("index.html");
-			}
-			$('#SignUpForm').submit(function() {
-				SubmitParse();
-				return false;
-			});
 
-			function SubmitParse() {
-				var inputusername = document.getElementById("username").value;
-				var inputpassword = document.getElementById("password").value;
-				var emailInput = document.getElementById("emailInput").value;
-				var user = Parse.User.current();
-				user.set("username", inputusername);
-				user.set("password", inputpassword);
-				user.set("email", emailInput);
-				user.save(null, {
-					success: function(user) {
-						alert("Success! You will be redirect to main page.");
-						window.location.replace("index.html");
+			function createRole() {
+				var roleACL = new Parse.ACL();
+				roleACL.setWriteAccess(Parse.User.current(), true);
+				roleACL.setPublicReadAccess(true);
+				var role = new Parse.Role("Administrator", roleACL);
+				role.getUsers().add(Parse.User.current());
+				role.save(null, {
+					success: function(saveObject) {
+						// The object was saved successfully.
+						alert('role creation done');
+						updateRoleACL(saveObject);
 					},
-					error: function(user, error) {
-						// Show the error message somewhere and let the user try again.
-						alert("Error: " + error.code + " " + error.message);
+					error: function(saveObject, error) {
+						// The save failed.
+						window.alert("Failed creating role with error: " + error.code + ":" + error.message);
+						//assignRoles();
 					}
 				});
-			};
+			}
+
+			function updateRoleACL(role) {
+				var roleACL = role.getACL();
+				roleACL.setWriteAccess(Parse.User.current(), false);
+				roleACL.setRoleWriteAccess(role, true);
+				role.save(null, {
+					success: function(saveObject) {
+						// The object was saved successfully.
+						alert('role acl updated');
+						getUser();
+					},
+					error: function(saveObject, error) {
+						// The save failed.
+						window.alert("Failed updating role with error: " + error.code + ":" + error.message);
+					}
+				})
+			}
 		</script>
 	</body>
 	<div id="footer" class="text-muted"></div>

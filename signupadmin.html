@@ -49,7 +49,7 @@
 			query.find({
 				success: function(results) {
 					$(".total").show();
-					$("#totalNumber").innerHTML = results.length;
+					document.getElementById("totalNumber").innerHTML = results.length;
 					//alert("Successfully retrieved " + results.length + " sign up people.");
 					// Do something with the returned Parse.Object values
 					for (var i = 0; i < results.length; i++) {
@@ -63,6 +63,6 @@
 			});
 		</script>
 	</body>
-	<div id="footer"></div>
+	<div id="footer1"></div>
 
 </html>

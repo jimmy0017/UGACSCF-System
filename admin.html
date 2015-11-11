@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>UGACSCF Sign Up Sheet</title>
+		<meta name="description" content="Sign Up Sheet">
+		<meta name="viewport" content="width=device-width">
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/HeaderFooter.js"></script>
+	</head>
+
+	<body>
+		<h3>Total Sign Up Number: <span class="label label-default" id="totalNumber">Null</span></h3>
+
+		<table class="table table-bordered table-hover" id="signUpTable">
+			<tr>
+				<td>Number</td>
+				<td>First Name</td>
+				<td>Last Name</td>
+				<td>Email</td>
+				<td>Reg Time</td>
+				<td>Actions</td>
+			</tr>
+		</table>
+		<script>
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+			var SignUpSheet = Parse.Object.extend("SignUpSheet");
+			var query = new Parse.Query(SignUpSheet);
+			 //query.equalTo("playerName", "Dan Stemkoski");
+			
+			query.find({
+				success: function(results) {
+					$(".total").show();
+					document.getElementById("totalNumber").innerHTML = results.length;
+					//alert("Successfully retrieved " + results.length + " sign up people.");
+					// Do something with the returned Parse.Object values
+					for (var i = 0; i < results.length; i++) {
+						var object = results[i];
+						CreateRow(
+							i + 1, 
+							object.get('firstName'), 
+							object.get('lastName'), 
+							object.get('email'), 
+							object.get('createdAt'), 
+							object.id);
+					}
+				},
+				error: function(error) {
+					alert("Error: " + error.code + " " + error.message);
+				}
+			});
+
+			function destoryObject(myObjectId) {
+				query.get(myObjectId, {
+					success: function(object) {
+						object.destroy({
+							success: function(object) {
+								location.reload();
+							},
+							error: function(object, error) {
+								// The delete failed.
+								// error is a Parse.Error with an error code and message.
+							}
+						});
+					},
+					error: function(object, error) {
+						alert("Error: " + error.code + " " + error.message + "ID=" + myObjectId);
+					}
+				});
+			}
+			
+			function CreateRow(number, fname, lname, email, regtime, objectId) {
+				var table = document.getElementById("signUpTable");
+				var row = table.insertRow(1);
+				var cell = row.insertCell(0);
+				cell.innerHTML = number;
+				cell = row.insertCell(1);
+				cell.innerHTML = fname;
+				cell = row.insertCell(2);
+				cell.innerHTML = lname;
+				cell = row.insertCell(3);
+				cell.innerHTML = email;
+				cell = row.insertCell(4);
+				cell.innerHTML = regtime;
+				cell = row.insertCell(5);
+				cell.innerHTML = "<button type='button' class='btn btn-danger' onclick=\"destoryObject('"+ objectId.toString() + "')\">Delete</button>";
+			}
+		</script>
+	</body>
+	<div id="footer1"></div>
+
+</html>
