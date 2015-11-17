@@ -39,7 +39,6 @@
 					$(".total").show();
 					document.getElementById("totalNumber").innerHTML = results.length;
 					//alert("Successfully retrieved " + results.length + " sign up people.");
-					// Do something with the returned Parse.Object values
 					for (var i = 0; i < results.length; i++) {
 						var object = results[i];
 						CreateRow(
@@ -49,6 +48,7 @@
 							object.get('email'), 
 							object.get('createdAt'), 
 							object.id);
+						
 					}
 				},
 				error: function(error) {

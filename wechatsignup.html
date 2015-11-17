@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>UGACSCF System Index</title>
+		<meta name="description" content="Sign Up Sheet">
+		<meta name="viewport" content="width=device-width">
+
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/HeaderFooter.js"></script>
+		<link rel="stylesheet" href="css/main.css" />
+		<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<script type="text/javascript">
+			(function() {
+				WgateJs = {};
+				WgateJs.auto_auth = true;
+				var u = (("https:" == document.location.protocol) ? "https" : "http") + "://st.weixingate.com/";
+				u = u + 'st/1656';
+				var d = document,
+					g = d.createElement('script'),
+					s = d.getElementsByTagName('script')[0];
+				g.type = 'text/javascript';
+				g.defer = true;
+				g.async = true;
+				g.src = u;
+				s.parentNode.insertBefore(g, s);
+			})();
+		</script>
+
+	</head>
+
+	<body>
+
+		<div id="main">
+			<h1>UGACSCF 微信报名跳转</h1>
+		</div>
+
+		<script type="text/javascript">
+			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
+			var WgateidSheet = Parse.Object.extend("wgateid");
+			var NewWgateid = new WgateidSheet();
+			var wgateidParam = getQueryVariable('wgateid');
+			if (wgateidParam != null) {
+				//alert("wgateid=" + wgateidParam);
+			} else {
+				alert("禁止访问！");
+				window.location.href = "https://system.ugacscf.org/";
+			}
+			var verifyParam = getQueryVariable('verify');
+
+			function getQueryVariable(variable) {
+				var query = window.location.search.substring(1);
+				var vars = query.split('&');
+				for (var i = 0; i < vars.length; i++) {
+					var pair = vars[i].split('=');
+					if (decodeURIComponent(pair[0]) == variable) {
+						return decodeURIComponent(pair[1]);
+					}
+				}
+				console.log('Query variable %s not found', variable);
+			}
+			var query = new Parse.Query(WgateidSheet);
+			query.equalTo("wgateId", wgateidParam);
+			query.find({
+				success: function(results) {
+					var object = results[0];
+					if (object == null) {
+						alert("请先绑定!");
+						window.location.href = "https://system.ugacscf.org/wechat.html?wgateid=" + wgateidParam;
+					}
+					window.location.href = "https://system.ugacscf.org/?fname=" + object.get("firstName") + "&lname=" + object.get("lastName") + "&email=" + object.get("email");
+				},
+				error: function(error) {}
+			});
+		</script>
+	</body>
+	<div id="footer" class="text-muted"></div>
+
+</html>
