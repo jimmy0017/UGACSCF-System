@@ -53,6 +53,7 @@
 				window.location.href = "https://system.ugacscf.org/";
 			}
 			var verifyParam = getQueryVariable('verify');
+			var objectIdParam = getQueryVariable('id');
 
 			function getQueryVariable(variable) {
 				var query = window.location.search.substring(1);
@@ -72,9 +73,9 @@
 					var object = results[0];
 					if (object == null) {
 						alert("请先绑定!");
-						window.location.href = "https://system.ugacscf.org/wechat.html?wgateid=" + wgateidParam;
+						window.location.href = "https://system.ugacscf.org/wechat.html?wgateid=" + wgateidParam + "&id=" + objectIdParam;
 					}
-					window.location.href = "https://system.ugacscf.org/?fname=" + object.get("firstName") + "&lname=" + object.get("lastName") + "&email=" + object.get("email");
+					window.location.href = "https://system.ugacscf.org/?fname=" + object.get("firstName") + "&lname=" + object.get("lastName") + "&email=" + object.get("email") + "&id=" + objectIdParam;
 				},
 				error: function(error) {}
 			});

@@ -4,42 +4,60 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>UGACSCF System Index</title>
+		<title>UGACSCF Sign Up Sheet</title>
 		<meta name="description" content="Sign Up Sheet">
 		<meta name="viewport" content="width=device-width">
 
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript" src="js/parse-latest.js"></script>
+		<link rel="stylesheet" href="css/main.css" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="js/HeaderFooter.js"></script>
-		<link rel="stylesheet" href="css/main.css" />
-		<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<!--<script type="text/javascript" src="js/HeaderFooter.js"></script>-->
 	</head>
 
 	<body>
 
 		<div id="main">
-			<h1>UGACSCF Sign Up Sheet</h1>
-
+			<h1>UGACSCF Sign Up Sheet活动报名</h1>
+			<h3>活动详情：<div id="eventDetail">查看活动介绍</div></h3>
+			<br>
 			<form id="SignUpForm" method="post">
 				<div class="form-group">
-					<label for="fname">First Name</label>
+					<label for="fname">名字 First Name</label>
 					<input type="text" class="form-control" id="fname" placeholder="Jane">
 				</div>
 				<div class="form-group">
-					<label for="lname">Last Name</label>
+					<label for="lname">姓氏 Last Name</label>
 					<input type="text" class="form-control" id="lname" placeholder="Doe">
 				</div>
 				<div class="form-group">
-					<label for="emailInput">Email address</label>
-					<input type="email" class="form-control" id="emailInput" placeholder="Email">
+					<label for="emailInput">邮箱地址 Email address</label>
+					<input type="email" class="form-control" id="emailInput" placeholder="yourname@email.com">
 				</div>
-				<!--<div class="form-group">
-					<label>剩余人数： <span class="label label-default" id="totalNumber">Null</span></label>
-				</div>-->
-				<button type="submit" id="signUpButton" class="btn btn-default">Sign Up</button>
+				<div class="form-group">
+					<label for="phoneInput">手机号码 Phone Number</label>
+					<input type="tel" class="form-control" id="phoneInput" placeholder="(123)456-7890">
+				</div>
+				<div class="form-group">
+					<label for="pickupLocation">接送地址 Pick Up Location</label>
+					<select class="form-control" id="pickupSelect">
+						<option>Drive by myself 自行驾驶前往</option>
+						<option>Tate Parking Deck停车场入口</option>
+						<option>Riverbend Pkwy各大车站</option>
+						<option>Lakeside 入口</option>
+						<option>Family Housing 地带</option>
+						<option>ECV/Ramsey停车场</option>
+						<option>其他</option>
+					</select>
+					<textarea class="form-control" rows="3" id="pickupLocation" placeholder="如果需要接送，请填写详细地址。Please fill in your address detail, no matter what you choose."></textarea>
+				</div>
+				<div class="form-group">
+					<label for="extraInput">备注 Other Comment:</label>
+					<textarea class="form-control" rows="3" id="extraInput" placeholder="其他任何事项（食物过敏等），请写在此。Any other information, please wrote it here."></textarea>
+				</div>
+				<button type="submit" id="signUpButton" class="btn btn-default">报名</button>
 			</form>
 
 			<div style="display:none" class="error">
@@ -47,72 +65,44 @@
 			</div>
 
 			<div style="display:none" id="successbox" class="success">
-				<p>Congratulation! You successfully signed up.</p>
+				<p>你已经成功报名了。</p>
+				<p>欢迎关注我们的官方微信号，扫描二维码：
+					<br><img src="img/weixin.jpg">
+					<br>如果您有任何疑问，请联系： <a href="mailto:webmaster@ugacscf.org">webmaster@ugacscf.org</a>
+				</p>
 			</div>
 
-			<div style="display:none" id="inputnumber" class="success">
-				<form id="InputNumberForm" method="post">
-					<div class="form-group">
-						<label for="fname">First Name</label>
-						<input type="text" class="form-control" id="fname" placeholder="Jane">
-					</div>
-					<div class="form-group">
-						<label for="lname">Last Name</label>
-						<input type="text" class="form-control" id="lname" placeholder="Doe">
-					</div>
-					<div class="form-group">
-						<label for="emailInput">Email address</label>
-						<input type="email" class="form-control" id="emailInput" placeholder="Email">
-					</div>
-					<!--<div class="form-group">
-					<label>剩余人数： <span class="label label-default" id="totalNumber">Null</span></label>
-				</div>-->
-					<button type="submit" id="signUpButton" class="btn btn-default">Sign Up</button>
-				</form>
-			</div>
-
-			<div style="display:none" id="successinput" class="success">
-				<p>Congratulation! You successfully input the number.</p>
-			</div>
-
-			<div style="display:none" class="nospace">
-				Already full~
-			</div>
 		</div>
 
 		<script type="text/javascript">
 			Parse.initialize("zcsUN6L48qEuivCDRYVIRZMPbcAL3uXmidyCXhtH", "bZTUGGQ37ZMLvOp2baAxyHMirE4H0Kudz7fxMVqv");
 			var SignUpSheet = Parse.Object.extend("SignUpSheet");
 			var NewSignUpSheet = new SignUpSheet();
-			var query = new Parse.Query(SignUpSheet);
+			var signUpQuery = new Parse.Query(SignUpSheet);
 			var fnameParam = getQueryVariable('fname');
 			if (fnameParam != null) document.getElementById("fname").value = fnameParam;
 			var lnameParam = getQueryVariable('lname');
 			if (lnameParam != null) document.getElementById("lname").value = lnameParam;
 			var emailParam = getQueryVariable('email');
 			if (emailParam != null) document.getElementById("emailInput").value = emailParam;
-			if ((fnameParam != null) & (lnameParam != null) & (emailParam != null)) {
-				SubmitParse();
-				document.getElementById("fname").disabled = true;
-				document.getElementById("lname").disabled = true;
-				document.getElementById("emailInput").disabled = true;
-				document.getElementById("signUpButton").disabled = true;
-			}
-
-			function checkEmail(emailaddress) {
-				query.find({
-					success: function(results) {
-						for (var i = 0; i < results.length; i++) {
-							var object = results[i];
-							if (emailaddress == object.get('email')) {
-								return false;
-							}
-						}
+			var eventInfo = Parse.Object.extend("eventInfo");
+			var eventQuery = new Parse.Query(eventInfo);
+			var objectIdParam = getQueryVariable('id');
+			var eventRelated;
+			if (objectIdParam != null) {
+				document.getElementById("eventDetail").innerHTML = "<a href='eventinfo.html?id=" + objectIdParam.toString() + "'>查看活动介绍</a>";
+				eventQuery.get(objectIdParam, {
+					success: function(object) {
+						eventRelated = object;
+						//alert(eventRelated.id);
 					},
-					error: function(error) {
-						alert("Error: " + error.code + " " + error.message);
+					error: function(object, error) {
+						// The object was not retrieved successfully.
+						// error is a Parse.Error with an error code and message.
 					}
 				});
+			}else{
+				objectIdParam == "Kkv3025TG2"；
 			}
 
 			function getQueryVariable(variable) {
@@ -126,38 +116,50 @@
 				}
 				console.log('Query variable %s not found', variable);
 			}
+			
 			$('#SignUpForm').submit(function() {
+				
 				SubmitParse();
+				
 				return false;
 			});
-			/*query.find({
-				success: function(results) {
-					document.getElementById("totalNumber").innerHTML = 25 - results.length;
-					if ((25 - results.length) == 0) {
-						$(".nospace").show();
-						$(".SignUpForm").hide();
-					}
-				},
-				error: function(error) {
-					alert("Error: " + error.code + " " + error.message);
-				}
-			});*/
+
 			function SubmitParse() {
+				//alert("start");
 				var fname = document.getElementById("fname").value;
 				var lname = document.getElementById("lname").value;
 				var emailInput = document.getElementById("emailInput").value;
+				var phoneInput = document.getElementById("phoneInput").value;
+				var pickupSelect_dg = document.getElementById("pickupSelect");
+				var pickupSelect_i = pickupSelect_dg.selectedIndex;
+				var pickupSelect = pickupSelect_dg.options[pickupSelect_i].text;
+				var pickupLocation = document.getElementById("pickupLocation").value;
+				//alert(eventRelated.id);
+				var extraInput = document.getElementById("extraInput").value;
 				NewSignUpSheet.save({
 					firstName: fname,
 					lastName: lname,
-					email: emailInput
+					email: emailInput,
+					phone: phoneInput,
+					pickupSelect: pickupSelect,
+					pickupLocation: pickupLocation,
+					extraInput: extraInput,
+					eventRelated: eventRelated
 				}, {
 					success: function(object) {
-						//$(".success").show();
 						$("#successbox").slideDown("slow");
-						//setTimeout('$("#SignUpForm").slideUp("slow")', 2000);
+						document.getElementById("fname").disabled = true;
+						document.getElementById("lname").disabled = true;
+						document.getElementById("emailInput").disabled = true;
+						document.getElementById("phoneInput").disabled = true;
+						document.getElementById("pickupSelect").disabled = true;
+						document.getElementById("pickupLocation").disabled = true;
+						document.getElementById("extraInput").disabled = true;
+						alert("success");
 					},
 					error: function(model, error) {
 						$(".error").show();
+						alert(model.toString()+"<br/>"+error.toString());
 					}
 				});
 			};
